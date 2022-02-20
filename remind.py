@@ -1,14 +1,8 @@
 import time
 import json
 import requests
-import load
-from config.read import (
-    get_wechat_conf,
-    get_remind_conf,
-    get_fund_code,
-    get_stock_code,
-    get_remind_fs_conf,
-)
+from config.read import get_wechat_conf
+
 
 root_path = "./"
 
@@ -67,28 +61,6 @@ class WeChat:
         respone = requests.post(send_url, send_msges)
         respone = respone.json()  # 当返回的数据是json串的时候直接用.json即可将respone转换成字典
         return respone["errmsg"]
-
-
-def run():
-    # load conf
-    fund_code_set = get_fund_code()
-    stock_code_set = get_stock_code()
-    remind_conf = get_remind_conf()
-    remind_fs_conf = get_remind_fs_conf()
-
-    # load data
-    data_dict = load.get_data(fund_code_set, stock_code_set, remind_fs_conf)
-
-    # remind
-    wechat = WeChat()
-
-    for _, data in data_dict.items():
-        if data.is_remind:
-            for user in data.remind_user:
-                for remind_method in remind_conf[user]:
-                    if remind_method == "wechat":
-                        wechat.send_data(data.remind_message)
-                        time.sleep(1)
 
 
 if __name__ == "__main__":

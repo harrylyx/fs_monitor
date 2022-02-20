@@ -16,8 +16,10 @@ class FinanceData(ABC):
         self.source = None
         self.name = None
         self.raw_data = None
-        self.netWorth = None  # 当前价格
-        self.dayGrowth = None  # 日涨幅
+        self.yesterday_worth = None  # 昨日价格
+        # self.yesterday_growth = None  # 昨日涨幅
+        self.worth = None  # 当前价格
+        self.growth = None  # 日涨幅
         self.is_remind = False  # 是否提醒
         self.remind_user = user_list  # 提醒用户
         self.remind_message = None
@@ -38,8 +40,6 @@ class FundData(FinanceData):
     def __init__(self, code, user_list) -> None:
         super().__init__(code, user_list)
         self.data_type = "fund"
-        self.expectWorth = None  # 当前估值
-        self.expectGrowth = None  # 估值涨幅
 
     def load(self):
         st_dt = datetime.strftime(datetime.now() - timedelta(days=7), "%Y-%m-%d")
@@ -54,22 +54,22 @@ class FundData(FinanceData):
 
     def transform(self):
         if self.source == "dongfang":
-            self.netWorth = self.raw_data["dwjz"]
-            self.expectWorth = self.raw_data["gsz"]
-            self.dayGrowth = self.expectGrowth = self.raw_data["gszzl"]
+            self.yesterday_worth = self.raw_data["dwjz"]
+            self.worth = self.raw_data["gsz"]
+            self.growth = self.raw_data["gszzl"]
         elif self.source == "xiaoxiong":
-            self.netWorth = self.raw_data["netWorth"]
-            self.dayGrowth = self.raw_data["dayGrowth"]
-            self.expectWorth = self.raw_data.get("expectWorth")
-            self.expectGrowth = self.raw_data.get("expectGrowth")
+            self.yesterday_worth = self.raw_data["netWorth"]
+            # self.yesterday_growth = self.raw_data["dayGrowth"]
+            self.worth = self.raw_data.get("expectWorth")
+            self.growth = self.raw_data.get("expectGrowth")
         else:
             raise Exception(f"source error, source is {self.source}")
-        if self.expectGrowth and float(self.expectGrowth) < 0:
+        if self.growth and float(self.growth) < 0:
             self.is_remind = True
         self.remind_message = f"""基金名称：{self.name}
             基金代码：{self.code}
-            当前基金单位净值估算： {self.expectWorth}
-            当前基金单位净值估算日涨幅： {self.expectGrowth}%
+            当前基金单位净值估算： {self.worth}
+            当前基金单位净值估算日涨幅： {self.growth}%
         """.replace(
             " ", ""
         )
@@ -89,15 +89,17 @@ class StockData(FinanceData):
         self.raw_data = info
 
     def transform(self):
-        self.netWorth = self.raw_data["price"]
-        self.dayGrowth = self.raw_data["changePercent"]
+        self.worth = self.raw_data["price"]
+        self.growth = self.raw_data["changePercent"]
+        self.yesterday_worth = self.raw_data["close"]
+        # self.yesterday_growth = self.raw_data["changePercent"]
         self.name = self.raw_data["name"]
-        if float(self.dayGrowth) < 0:
+        if float(self.growth) < 0:
             self.is_remind = True
         self.remind_message = f"""股票名称：{self.name}
             股票代码：{self.code}
-            收盘价： {self.netWorth}
-            涨幅： {self.dayGrowth}%
+            收盘价： {self.worth}
+            涨幅： {self.growth}%
         """.replace(
             " ", ""
         )

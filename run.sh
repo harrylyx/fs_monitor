@@ -1,6 +1,5 @@
 cd /root/fs_monitor
-python3 remind.py
-python3 save.py
+python3 run.py
 cd /root/HomeAccount
 git pull
 git add .

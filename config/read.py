@@ -51,5 +51,11 @@ def get_remind_conf():
     return config
 
 
+def get_code2name_conf():
+    with open(root_path / "code2name.yaml", "r") as f:
+        config = yaml.safe_load(f)
+    return config
+
+
 if __name__ == "__main__":
     print(get_remind_fs_conf())
