@@ -1,5 +1,5 @@
 cd /root/fs_monitor
-python3 run.py
+/usr/local/miniconda3/bin/python run.py
 cd /root/HomeAccount
 git pull
 git add .

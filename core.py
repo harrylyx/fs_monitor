@@ -6,6 +6,7 @@ from api import (
     fund_xiaoxiong,
     stock_info_xiaoxiong,
     stock_kline_xiaoxiong,
+    digital_coin_coincap,
 )
 
 
@@ -100,6 +101,33 @@ class StockData(FinanceData):
             股票代码：{self.code}
             收盘价： {self.worth}
             涨幅： {self.growth}%
+        """.replace(
+            " ", ""
+        )
+
+
+class DigitalCoinData(FinanceData):
+    def __init__(self, code, user_list) -> None:
+        super().__init__(code, user_list)
+        self.data_type = "digital_coin"
+
+    def load(self):
+        self.source = "coincap"
+        self.raw_data = digital_coin_coincap(self.code)
+
+    def transform(self):
+        assert len(self.raw_data) >= 15
+        self.worth = float(self.raw_data[-1]["close"])
+        self.yesterday_worth = float(self.raw_data[-15]["close"])
+        self.growth = ((self.worth - self.yesterday_worth) / self.yesterday_worth) * 100
+        # self.yesterday_growth = self.raw_data["changePercent"]
+        self.name = self.code
+        if float(self.growth) >= 1 or float(self.growth) <= -1:
+            self.is_remind = True
+        self.remind_message = f"""币名称：{self.name}
+            15分钟前收盘价： {self.yesterday_worth}
+            当前价格： {self.worth}
+            涨跌幅： {self.growth:0.4}%
         """.replace(
             " ", ""
         )

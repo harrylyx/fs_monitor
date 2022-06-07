@@ -1,3 +1,4 @@
+import time
 import json
 import requests
 
@@ -39,3 +40,20 @@ def stock_info_xiaoxiong(stock_code):
         return r["data"]
     else:
         raise Exception(f"stock_info_xiaoxiong error, code: {r['code']}")
+
+
+def digital_coin_coincap(coin_code):
+    now = int(time.time())
+    now -= now % 60
+    now *= 1000
+    url = f"https://api.coincap.io/v2/candles?exchange=binance&interval=m1&baseId={coin_code}&quoteId=tether&start={now - 1500000}&end={now}"
+    r = requests.get(url).json()
+    if "data" in r:
+        return r["data"]
+    else:
+        raise Exception(f"digital_coin_coincap error, {r}")
+
+
+if __name__ == "__main__":
+    data = digital_coin_coincap("binance-coin")
+    print(len(data))
