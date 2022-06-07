@@ -24,8 +24,12 @@ def get_coin_data(coin_set, remind_fs_conf) -> list:
     for coin_code in coin_set:
         coin_data = DigitalCoinData(coin_code, remind_fs_conf[coin_code])
         coin_data.load()
-        coin_data.transform()
-        data_dict[coin_code] = coin_data
+        coin_data.transform(5)
+        data_dict[coin_code + "_5"] = coin_data
+        coin_data = DigitalCoinData(coin_code, remind_fs_conf[coin_code])
+        coin_data.load()
+        coin_data.transform(15)
+        data_dict[coin_code + "_15"] = coin_data
     return data_dict
 
 

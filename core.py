@@ -115,17 +115,16 @@ class DigitalCoinData(FinanceData):
         self.source = "coincap"
         self.raw_data = digital_coin_coincap(self.code)
 
-    def transform(self):
-        assert len(self.raw_data) >= 15
+    def transform(self, minute: int):
+        assert len(self.raw_data) >= minute
         self.worth = float(self.raw_data[-1]["close"])
-        self.yesterday_worth = float(self.raw_data[-15]["close"])
+        self.yesterday_worth = float(self.raw_data[-minute]["close"])
         self.growth = ((self.worth - self.yesterday_worth) / self.yesterday_worth) * 100
         # self.yesterday_growth = self.raw_data["changePercent"]
-        self.name = self.code
-        if float(self.growth) >= 1 or float(self.growth) <= -1:
+        if self.growth >= 1 or self.growth <= -1:
             self.is_remind = True
-        self.remind_message = f"""币名称：{self.name}
-            15分钟前收盘价： {self.yesterday_worth}
+        self.remind_message = f"""币名称：{self.code}
+            {minute}分钟前收盘价： {self.yesterday_worth}
             当前价格： {self.worth}
             涨跌幅： {self.growth:0.4}%
         """.replace(

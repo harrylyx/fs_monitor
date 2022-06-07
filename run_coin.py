@@ -1,4 +1,3 @@
-import imp
 import time
 import load
 from datetime import datetime
@@ -21,6 +20,7 @@ def run():
     print(
         datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         [v.remind_message for k, v in data_dict.items()],
+        file=open("/root/fs_monitor/run_coin.log", "a"),
     )
 
     # remind

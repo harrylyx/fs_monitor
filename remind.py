@@ -4,7 +4,7 @@ import requests
 from config.read import get_wechat_conf
 
 
-root_path = "./"
+root_path = "/root/fs_monitor/"
 
 
 class WeChat:
