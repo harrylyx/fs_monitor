@@ -42,6 +42,15 @@ def stock_info_xiaoxiong(stock_code):
         raise Exception(f"stock_info_xiaoxiong error, code: {r['code']}")
 
 
+def stock_min_xiaoxiong(stock_code):
+    url = f"https://api.doctorxiong.club/v1/stock/min?code={stock_code}"
+    r = requests.get(url).json()
+    if r["code"] == 200:
+        return r["data"]
+    else:
+        raise Exception(f"stock_info_xiaoxiong error, code: {r['code']}")
+
+
 def digital_coin_coincap(coin_code):
     now = int(time.time())
     now -= now % 60

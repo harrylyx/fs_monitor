@@ -31,6 +31,15 @@ def get_stock_code():
     return stock_code_set
 
 
+def get_stock_min_code():
+    with open(root_path / "stock_min.yaml", "r") as f:
+        config = yaml.safe_load(f)
+    stock_code_set = set()
+    for name, stock_list in config.items():
+        stock_code_set |= set(stock_list)
+    return stock_code_set
+
+
 def get_remind_fs_conf():
     with open(root_path / "fund.yaml", "r") as f:
         config_fund = yaml.safe_load(f)
