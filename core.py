@@ -120,7 +120,7 @@ class StockMinData(FinanceData):
     def transform(self):
         buy = self.raw_data["buy"]
         self.name = self.raw_data["name"]
-        if float(buy[1]) < 600000:
+        if float(buy[1]) < 500000:
             self.is_remind = True
         self.remind_message = f"""股票名称：{self.name}
             股票代码：{self.code}

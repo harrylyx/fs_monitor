@@ -27,6 +27,8 @@ def get_stock_code():
         config = yaml.safe_load(f)
     stock_code_set = set()
     for name, stock_list in config.items():
+        if not stock_list:
+            break
         stock_code_set |= set(stock_list)
     return stock_code_set
 
@@ -50,6 +52,8 @@ def get_remind_fs_conf():
     remind_dict = dict()
     for config_dict in [config_fund, config_stock, config_coin]:
         for k, v in config_dict.items():
+            if not v:
+                continue
             for i in v:
                 remind_dict.setdefault(i, [])
                 remind_dict[i].append(k)
